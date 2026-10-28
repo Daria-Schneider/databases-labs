@@ -1,0 +1,35 @@
+# PostgreSQL 17 для лабораторных работ по базам данных.
+#
+#   docker compose up -d     — запустить сервер (в фоне)
+#   docker compose stop      — остановить; данные сохраняются в томе pg_data
+#   docker compose down -v   — удалить контейнер вместе со всеми данными
+#
+# Папка репозитория доступна внутри контейнера как /labs (только чтение),
+# поэтому скрипты запускаются так:
+#   docker compose exec pg psql -U postgres -d labs -f /labs/lab1/schema.sql
+name: db-labs
+
+services:
+  pg:
+    image: postgres:17
+    container_name: db-labs-pg17
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: labs
+      TZ: Europe/Moscow       # время сервера и вывод timestamptz по Москве
+      PGTZ: Europe/Moscow
+    ports:
+      - "127.0.0.1:5432:5432" # доступ только с этого компьютера
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./:/labs:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d labs"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  pg_data:

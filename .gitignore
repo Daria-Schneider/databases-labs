@@ -1,0 +1,17 @@
+# Задания и материалы курса — только локально
+sources/
+
+# Личные заметки к защите
+DEFENSE.md
+
+# Черновики запросов
+*.local.sql
+scratch/
+
+# Окружение и системный мусор
+.env
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
